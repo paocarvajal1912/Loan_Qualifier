@@ -5,6 +5,7 @@ This contains a helper function for loading and saving CSV files.
 
 """
 import csv
+from pathlib import Path
 
 
 def load_csv(csvpath):
@@ -30,7 +31,7 @@ def load_csv(csvpath):
     return data
 
 
-def export_csv(csvpath, data, header):
+def save_csv(csvpath, data, header):
     print (f"Type csvpath {type(csvpath)}")
 
     #print(f"This is the input data: {data}")
@@ -46,6 +47,23 @@ def export_csv(csvpath, data, header):
 
         # Write the CSV data
         for row in data:
-            print(f"escribi una linea {row}")
+        #    print(f"escribi una linea {row}")  BORRAR ESTA LINEA
             csvwriter.writerow(row)
     return(csvfile)
+
+def csv_path_to_file_from_string_dir(string_dir, csv_output_file_name="output.csv"):
+    """
+    This function receives a string as a directory path, and the name of a csv output file,
+    and return the path to that file located in tht directory.
+    If the directory does not exist, it creates it.
+    """
+
+    # Set the output file path
+    file_path = Path(string_dir)
+    file_path.mkdir(parents=True, exist_ok=True)
+
+    output_file=csv_output_file_name
+    output_path= file_path/output_file
+
+    csvpath = Path(output_path)
+    return(csvpath)

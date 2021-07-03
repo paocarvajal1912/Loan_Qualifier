@@ -11,10 +11,14 @@ import sys
 import fire
 import questionary
 from pathlib import Path
+import time
 
+time.sleep(1)
+print('\033c')
 from qualifier.utils.fileio import (
     load_csv,
-    export_csv
+    save_csv,
+    csv_path_to_file_from_string_dir
 )
 
 from qualifier.utils.calculators import (
@@ -36,12 +40,11 @@ def load_bank_data():
         The bank data from the data rate sheet CSV file.
     """
 
-    csvpath = questionary.text("Enter a relative file path to a rate-sheet (.csv):").ask()
+    csvpath = questionary.text("Enter a path to a sheet with the data (.csv):").ask()
     csvpath = Path(csvpath)
-    print(f"type csv path:{type(csvpath)}")
 
     if not csvpath.exists():
-        sys.exit(f"Oops! Can't find this path: {csvpath}.")
+        sys.exit(f"Oops! Can't find this path: {csvpath}. Please try running the App again.\n\n")
 
     return load_csv(csvpath)
 
@@ -104,7 +107,11 @@ def find_qualifying_loans(bank_data, credit_score, debt, income, loan, home_valu
     bank_data_filtered = filter_debt_to_income(monthly_debt_ratio, bank_data_filtered)
     bank_data_filtered = filter_loan_to_value(loan_to_value_ratio, bank_data_filtered)
 
-    print(f"Found {len(bank_data_filtered)} qualifying loans")
+    print(f"\n Found {len(bank_data_filtered)} qualifying loans in the following banks:")
+    count=1
+    for list in bank_data_filtered:
+        print(count, list[0])
+        count +=1
 
     return bank_data_filtered
 ()
@@ -116,22 +123,34 @@ def save_qualifying_loans(qualifying_loans):
     Args:
         qualifying_loans (list of lists): The qualifying bank loans.
     """
-    # @TODO: Complete the usability dialog for savings the CSV Files.
+
+    # Acceptance criteria 1&3: prompt user to save results, and allow to opt out
+    number_of_qualifying_loans=len(qualifying_loans)
+
+    want_a_file=questionary.confirm(f"Would you like to export results to an output.csv file?").ask()
+    
+
+    if want_a_file and number_of_qualifying_loans>0:
+        print(f"\n")
+
+    # Acceptance criteria 2:if no qualified loans, notify user and exit
+    elif want_a_file and  number_of_qualifying_loans==0:
+        sys.exit("This applicant does not qualify for a loan in any of the analyzed banks, so there is no data to export. Thanks for analyzing with us.")
+
+    # Acceptance criteria 3: user able to opt out of saving results
+    else:
+        sys.exit("Thank you for using our Loan Qualifier application. Good bye.")
+    
+    # Acceptance criteria 4: prompt user fo a file path to save the loan
     header=['Lender','Max' 'Loan Amount','Max LTV','Max DTI','Min Credit Score','Interest Rate']
-    path_input = questionary.text('What relative path you want the output.csv file to get exported. Use format as "subfolder/" for a subfolder in the same directory you are in the Terminal').ask()
+    path_input = questionary.text('What path you want the output.csv file to get exported. Use format as "folder/" for a subfolder in the same directory you are in the Terminal. If folder do not exist, it will be created.').ask()
 
     # Set the output file path
-    file_path = Path(path_input)
-    file_path.mkdir(parents=True, exist_ok=True)
+    csvpath=csv_path_to_file_from_string_dir(path_input, csv_output_file_name="output.csv")
 
-    output_file="output.csv"
-    output_path= file_path/output_file
-
-    csvpath = Path(output_path)
-  #  else:
-    export_csv(csvpath, qualifying_loans, header)
-
-
+    #Acceptance criteria 5: save results in a csv file
+    save_csv(csvpath, qualifying_loans, header)
+    return()
 
 
 
