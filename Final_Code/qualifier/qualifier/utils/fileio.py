@@ -33,11 +33,17 @@ def load_csv(csvpath):
 
 
 def save_csv(csvpath, data, header):
-    print (f"Type csvpath {type(csvpath)}")
+    """Save data with header as an output on a CSV file in the csvpath provided.
 
-    #print(f"This is the input data: {data}")
-    #print(f"Tghis is the header: {header}")    
-    #print(f"This is the path {csvpath}, and the type: {type(csvpath)}")
+    Args:
+        csvpath (Path): The csv file path where the data will be saved
+        data: a list of lists with data
+        header: a proper header for the data parameter
+
+    Returns:
+         The csvpath to the file with the data output
+    """
+    print (f"Type csvpath {type(csvpath)}")
 
     with open(csvpath, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
@@ -45,10 +51,10 @@ def save_csv(csvpath, data, header):
         # Export the header
         csvwriter.writerow(header)
 
-        # Write the CSV data
+        # Write the CSV data in the csvfile
         for row in data:
             csvwriter.writerow(row)
-    return(csvfile)
+    return(csvpath)
 
 def csv_path_to_file_from_string_dir(string_dir, csv_output_file_name="output.csv"):
     """
