@@ -36,7 +36,7 @@ def save_csv(csvpath, data, header):
     """Save data with header as an output on a CSV file in the csvpath provided.
 
     Args:
-        csvpath (Path): The csv file path where the data will be saved
+        csvpath: The csv file-path where the data will be saved
         data: a list of lists with data
         header: a proper header for the data parameter
 
@@ -54,22 +54,6 @@ def save_csv(csvpath, data, header):
         # Write the CSV data in the csvfile
         for row in data:
             csvwriter.writerow(row)
-    return(csvpath)
-
-def csv_path_to_file_from_string_dir(string_dir, csv_output_file_name="output.csv"):
-    """
-    This function receives a string as a directory path, and the name of a csv file,
-    and return the corresponding file path. 
-    If the directory does not exist, it creates it.
-    """
-
-    # Set the output file path
-    file_path = Path(string_dir)
-    file_path.mkdir(parents=True, exist_ok=True)
-
-    output_file=csv_output_file_name
-    output_path= file_path/output_file
-
-    csvpath = Path(output_path)
+    print(f"\n Data has been exported to the following path:\n {csvpath.absolute()} \n\n")
     return(csvpath)
 

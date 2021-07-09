@@ -16,8 +16,7 @@ import time
 
 from qualifier.utils.fileio import (
     load_csv,
-    save_csv,
-    csv_path_to_file_from_string_dir
+    save_csv
 )
 
 from qualifier.utils.calculators import (
@@ -44,7 +43,7 @@ def load_bank_data():
     csvpath = Path(csvpath)
 
     if not csvpath.exists():
-        sys.exit(f"Oops! Can't find this path: {csvpath}. Please try running the App again. Make sure that the path exist, and that the path do not contains quote marks: \n\n")
+        sys.exit(f"Oops! Can't find this path: {csvpath}. Please try running the App again. Make sure that the path exist. \n\n")
 
     return load_csv(csvpath)
 
@@ -119,12 +118,11 @@ def save_qualifying_loans(qualifying_loans, header):
     Returns no value
     """
 
-    # Acceptance criteria 1&3: prompt user to save results, and allow to opt out
+# Acceptance criterias 
     number_of_qualifying_loans=len(qualifying_loans)
     print(f"You have {number_of_qualifying_loans} lenders for which your loan qualifies.\n\n")
  
     # Acceptance criteria 2:if no qualified loans, notify user and exit
-
     if number_of_qualifying_loans==0:
        sys.exit("There are no qualifying loans in the analized lenders. Thanks for using this application. Good bye.\n\n")
 
@@ -132,8 +130,7 @@ def save_qualifying_loans(qualifying_loans, header):
     output_choice=questionary.select('How would you like to see the results:', 
         choices=[
             "Display on screen the list of lenders for which the loan qualifies",
-            "Export results to an existing csv file by providing a proper path",
-            "Export results to a new output.csv file by providing an existing or not directory",
+            "Export detailed results of lenders and approval conditions to a csv-file",
             "Exit"]).ask()
 
     if output_choice=="Display on screen the list of lenders for which the loan qualifies":
@@ -143,35 +140,32 @@ def save_qualifying_loans(qualifying_loans, header):
             count +=1
         print(f"\n\n")
         sys.exit("Thanks for your request.\n\n")
-
-    # Acceptance criteria 4: prompt user for a file path to save the loan
-    elif output_choice=="Export results to an existing csv file by providing a proper file-path":
-        path_input = questionary.text('What csv-file path you want the results to be exported? Please make sure to include the csv extention (.csv) to your file, and that the file exists.').ask()
-
+ 
+    # Acceptance criteria 3: user able to opt out of saving results
+    elif output_choice=="Exit":
+         sys.exit("\n You have opt to exit. Thanks for using our application.")
+    
+        # Acceptance criteria 4&5: prompt user for a file path to save the loan as a csv file
+    else:
+        path_input = questionary.text('What csv-file path you want the results to be exported? Please make sure to include the csv extention (.csv) to your file.').ask()
+        file_extension=path_input[-4:].lower()
+        #Make sure export file is csv
+        if file_extension!='.csv':
+            sys.exit(f"Your file extension do not correspond to a csv-file (.csv). We are not able to complete your request.")
+        
         # Set the output file path
         csvpath=Path(path_input)
 
         #Verify the path exist
         if not csvpath.exists():
-            sys.exit(f"\n Oops! Can't find this path: {csvpath}. Please try running the App again. Make sure that the path exist, and check the format. For example: data/output.csv \n\n")
+            sys.exit(f"\n This file does not exist currently, so it has been created. \n\n")
         # If path exist, set the output file path
-        csvpath=Path(path_input)
 
-    elif output_choice=="Export results to a new output.csv file by providing an existing or not directory":
-        path_input = questionary.text('What directory path would you like the new output.csv file to be exported. Use format as "folder/" for a subfolder in the same directory you are in the Terminal. You can also use an absolute directory path. If folder does not exist, it will be created.').ask()
-        # Check the csvpath do not exist
-        csvpath=Path(path_input)
         if csvpath.exists():
-            sys.exit(f"\nThe path {csvpath} already exist. We will not overwrite it, since you choose an option to generate a new file. You can try running the application again. Thanks. \n\n")
+            print("This file currently exist, so it has been overwrited.")
+        
+        save_csv(csvpath, qualifying_loans, header)
 
-        # Set the output file path
-        csvpath=csv_path_to_file_from_string_dir(path_input, csv_output_file_name="output.csv")
- 
-    # Acceptance criteria 3: user able to opt out of saving results
-    else:
-         sys.exit("\n You have opt to exit. Thanks for using our application.")
-
-    save_csv(csvpath, qualifying_loans,header)
     return()
 
 
