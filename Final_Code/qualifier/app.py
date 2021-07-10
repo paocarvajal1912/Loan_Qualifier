@@ -110,29 +110,44 @@ def find_qualifying_loans(bank_data, credit_score, debt, income, loan, home_valu
 
 
 def save_qualifying_loans(qualifying_loans, header):
-    """Saves the qualifying loans to a CSV file.
+    """ This function save results in a csv file based on inputs from CLI, 
+        and Acceptance Criterias
 
     Args:
-        qualifying_loans (list of lists): The qualifying bank loans.
+        qualifying_loans: a list of list of filtered lenders and their qualification requirements
+        header: a proper header specifying column names for the list elements in qualifying_loans 
+        
+    Procedures executed based on Interactions
+        1. Function counts the number of results in qualifying_loans (number of lists). 
+           If there are zero, it exits with proper message.
+        2. If there is one or more loans (lists), it provides the option of 
+          displaying them on screen, generates a csv output file, or exit.
+        3. It displays results on screen or Exit in aggrement with choice selected
+        4. If csv output file choice is selected, it asks for the file-path and validate extension to '.csv'.
+            4a It saves qualifying_loans and header to a csv file in proper file path provided
+            4b It exits with proper message if invalid path is provided
 
-    Returns no value
+    Returns:
+        If proceeds, returns the path where the qualifying_loans where exported.
+        Otherwise, it exits before returning any value.
     """
 
-# Acceptance criterias 
+    # Procedure 1 
     number_of_qualifying_loans=len(qualifying_loans)
     print(f"You have {number_of_qualifying_loans} lenders for which your loan qualifies.\n\n")
  
-    # Acceptance criteria 2:if no qualified loans, notify user and exit
+            # Acceptance criteria 2:if no qualified loans, notify user and exit
     if number_of_qualifying_loans==0:
        sys.exit("There are no qualifying loans in the analized lenders. Thanks for using this application. Good bye.\n\n")
 
-
+    # Procedure 2: Main Menu of options for output selection
     output_choice=questionary.select('How would you like to see the results:', 
         choices=[
             "Display on screen the list of lenders for which the loan qualifies",
             "Export detailed results of lenders and approval conditions to a csv-file",
             "Exit"]).ask()
 
+    # Procedure 3: display of results and exit
     if output_choice=="Display on screen the list of lenders for which the loan qualifies":
         count=1
         for list in qualifying_loans:
@@ -140,33 +155,28 @@ def save_qualifying_loans(qualifying_loans, header):
             count +=1
         print(f"\n\n")
         sys.exit("Thanks for your request.\n\n")
- 
-    # Acceptance criteria 3: user able to opt out of saving results
+
+        # Acceptance criteria 3: user able to opt out of saving results
     elif output_choice=="Exit":
          sys.exit("\n You have opt to exit. Thanks for using our application.")
     
+    # Procedure 4
         # Acceptance criteria 4&5: prompt user for a file path to save the loan as a csv file
     else:
         path_input = questionary.text('What csv-file path you want the results to be exported? Please make sure to include the csv extention (.csv) to your file.').ask()
+       
+        # Validation of '.csv' extension
         file_extension=path_input[-4:].lower()
-        #Make sure export file is csv
+            # Exit if extention is wrong
         if file_extension!='.csv':
             sys.exit(f"Your file extension do not correspond to a csv-file (.csv). We are not able to complete your request.")
+        else:
+            # Set the output file path
+            csvpath=Path(path_input)
         
-        # Set the output file path
-        csvpath=Path(path_input)
+    save_csv(csvpath, qualifying_loans, header)
 
-        #Verify the path exist
-        if not csvpath.exists():
-            sys.exit(f"\n This file does not exist currently, so it has been created. \n\n")
-        # If path exist, set the output file path
-
-        if csvpath.exists():
-            print("This file currently exist, so it has been overwrited.")
-        
-        save_csv(csvpath, qualifying_loans, header)
-
-    return()
+    return(csvpath)
 
 
 def run():
