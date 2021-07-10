@@ -43,7 +43,7 @@ def load_bank_data():
     csvpath = Path(csvpath)
 
     if not csvpath.exists():
-        sys.exit(f"Oops! Can't find this path: {csvpath}. Please try running the App again. Make sure that the path exist. \n\n")
+        sys.exit(f"Oops! Can't find this path: {csvpath}. \n \n Make sure that the path exist, and that it has no spaces at the end. \n Please try running the App again.  \n\n")
 
     return load_csv(csvpath)
 
@@ -150,8 +150,9 @@ def save_qualifying_loans(qualifying_loans, header):
     # Procedure 3: display of results and exit
     if output_choice=="Display on screen the list of lenders for which the loan qualifies":
         count=1
+        print(f"\n \n List of lenders that would approve your loan, and their interes rate:")
         for list in qualifying_loans:
-            print(count, list[0])
+            print(f"{count}. {list[0]} , i={list[5]}%")
             count +=1
         print(f"\n\n")
         sys.exit("Thanks for your request.\n\n")
@@ -163,7 +164,7 @@ def save_qualifying_loans(qualifying_loans, header):
     # Procedure 4
         # Acceptance criteria 4&5: prompt user for a file path to save the loan as a csv file
     else:
-        path_input = questionary.text('What csv-file path you want the results to be exported? Please make sure to include the csv extention (.csv) to your file.').ask()
+        path_input = questionary.text('What csv-file path you want the results to be exported? Please make sure to include the csv extention (.csv) to your file, and that there are no spaces at the end!').ask()
        
         # Validation of '.csv' extension
         file_extension=path_input[-4:].lower()
