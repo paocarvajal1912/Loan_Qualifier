@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Helper functions to load and save CSV data.
 
-This contains two helper functions for loading and saving CSV files.
+This contains two helper functions for loading and saving CSV files,
+and one helper function to create a directory in case it doesn't exist.
 
 """
 import csv
