@@ -23,8 +23,6 @@ def test_calculate_loan_to_value_ratio():
 
 
 def test_save_csv():
-    # @TODO: Your code here!
-    # Use Path from pathlib to output the test csv to ./data/output/qualifying_loans.csv
     csvpath=Path('./data/output/qualifying_loans.csv')
     header=['Lender','Max Loan Amount','Max LTV','Max DTI','Min Credit Score','Interest Rate']
     data=[

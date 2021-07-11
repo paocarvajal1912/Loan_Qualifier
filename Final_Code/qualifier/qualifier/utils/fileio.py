@@ -91,7 +91,6 @@ def create_path(path):
         os.makedirs(dir_alone)
 
     created_path=os.path.join(dir_alone, file_alone)
-    print(f"Regresamos el path completo")
 
     return(created_path)
 
