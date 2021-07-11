@@ -86,13 +86,13 @@ Once all the questions have been responded, the application will perform some ca
 The user will have 3 options for output: 
 > 1. A screen display of lenders with their interest rates, 
 
-> 2. A more detailed csv output file which consist of a subset of lenders from the initial input file that would approve the specified loan, with all the detailed information available,
+> 2. A more detailed csv output file which consist of the subset of lenders from the initial input file that would underwrite the loan, with all the detailed information available,
 
 > 3. The option to exit without any output
 
 ![Figure](Final_Code/qualifier/images/output_prompt.jpg "Figure: App Giving Options of Outputs.")
 
-The application will export results to a csv file path provided by the user. If the path exist, it will overwrite the file; and if it doesn't exist, it will create it. In the next imagine, you can see the example of a request to provide the output to a new path. 
+The application will export results to a csv file path provided by the user. If the path exists, it will overwrite the file; and if it doesn't exist, it will create it. In the next imagine, you can see the example of a request to provide the output to a new path. 
 
 ![Figure](Final_Code/qualifier/images/csv_file_output.jpg "Figure: App Creating A New CSV File with Lenders that Would Approve the Loan.")
 
